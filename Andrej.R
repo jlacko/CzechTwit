@@ -18,10 +18,10 @@ setup_twitter_oauth(heslo$api_key,
 
 # Oficiální komunikace
 # Babiš = AndrejBabis, Ovčáček - čtveráček = PREZIDENTmluvci, Slávek = SlavekSobotka
-tweets <- userTimeline("PREZIDENTmluvci", n = 3200)
+tweets <- userTimeline("AndrejBabis", n = 3200)
 
 # Hlas lidu...
-tweets <- searchTwitter("Zeman", n=3200, lang = "cs")
+tweets <- searchTwitter("Sparta", n=3200, lang = "cs")
 
 # Vlastní těžení... ----
 tweets <- tbl_df(map_df(tweets, as.data.frame))
@@ -34,7 +34,10 @@ words <- tweets %>%
   filter(!word %in% balast$word,
        str_detect(word, "[a-z]"))
 
-freq <- count(words, word)
-freq$n[freq$n > 200] <- 200 # zastropovat maximální frekvenci na 200
+freq <- words %>%
+  count(word) %>%
+  arrange(desc(n))
 
-wordcloud(freq$word, freq$n, max.words = 75, colors=rev(brewer.pal(6,"RdYlGn")))
+freq$n[freq$n > 500] <- 500 # zastropovat maximální frekvenci slov
+
+wordcloud(freq$word, freq$n, max.words = 75, random.order = F, colors=rev(brewer.pal(6,"RdYlGn")))
