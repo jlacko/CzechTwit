@@ -4,6 +4,7 @@ library(dplyr)
 library(stringr)
 library(tidytext)
 library(wordcloud)
+library(ggplot2)
 
 # balast = slovní vata nepřinášející informace
 balast <- data.frame(word = c("rt", "a", "na", "to", "v", "se","u","mi","po", "aby","když", "bude", "asi", "já", "k", "má",  "že", "je", "jsem", "jsme","o","za", "si", "ale", "s", "z", "ale", "už", "http", "https", "tak","do","ve", "pro", "už", "co", "t.co", "i", "od", "by", "mě"))
@@ -21,7 +22,7 @@ setup_twitter_oauth(heslo$api_key,
 tweets <- userTimeline("AndrejBabis", n = 3200)
 
 # Hlas lidu...
-tweets <- searchTwitter("Sparta", n=3200, lang = "cs")
+tweets <- searchTwitter("Andrej+Babis", n=3200, lang = "cs")
 
 # Vlastní těžení... ----
 tweets <- tbl_df(map_df(tweets, as.data.frame))
@@ -38,6 +39,14 @@ freq <- words %>%
   count(word) %>%
   arrange(desc(n))
 
-freq$n[freq$n > 500] <- 500 # zastropovat maximální frekvenci slov
+if (freq[1,2] > 1.5*freq[2,2]) freq[1,2] <- 1.5*freq[2,2] # snížit prominenci prvního slova
 
 wordcloud(freq$word, freq$n, max.words = 75, random.order = F, colors=rev(brewer.pal(6,"RdYlGn")))
+
+ggplot(data = freq[1:20,], aes (x = reorder(word, n), y = n)) +
+  geom_col(fill = "firebrick")+
+  coord_flip()+
+  theme_light()+
+  theme(axis.title.x=element_blank(),
+        axis.title.y=element_blank())
+  
