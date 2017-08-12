@@ -7,7 +7,7 @@ library(wordcloud)
 library(ggplot2)
 
 # balast = slovní vata nepřinášející informace
-balast <- data.frame(word = c("rt", "a", "na", "to", "v", "se","u", "mi","po", "aby","když", "asi", "já", "k", "má",  "že", "je", "jsem", "jsme","o", "za", "si", "ale", "s", "z", "ale", "už", "http", "https", "tak","do","ve", "pro", "už", "co", "t.co", "i", "od", "by", "mě"))
+balast <- data.frame(word = c("rt", "t.c", "http", "https", "a", "na", "to", "v", "se","u", "mi","po", "aby","když", "asi", "já", "k", "má",  "že", "je", "jsem", "jsme","o", "za", "si", "ale", "s", "z", "ale", "už", "tak","do","ve", "pro", "už", "co", "t.co", "i", "od", "by", "mě"))
 
 # Připojení ----
 
