@@ -7,7 +7,7 @@ library(wordcloud)
 library(ggplot2)
 
 # balast = slovní vata nepřinášející informace
-balast <- data.frame(word = c("rt", "a", "na", "to", "v", "se","u","mi","po", "aby","když", "bude", "asi", "já", "k", "má",  "že", "je", "jsem", "jsme","o","za", "si", "ale", "s", "z", "ale", "už", "http", "https", "tak","do","ve", "pro", "už", "co", "t.co", "i", "od", "by", "mě"))
+balast <- data.frame(word = c("rt", "a", "na", "to", "v", "se","u", "mi","po", "aby","když", "asi", "já", "k", "má",  "že", "je", "jsem", "jsme","o", "za", "si", "ale", "s", "z", "ale", "už", "http", "https", "tak","do","ve", "pro", "už", "co", "t.co", "i", "od", "by", "mě"))
 
 # Připojení ----
 
@@ -16,6 +16,8 @@ setup_twitter_oauth(heslo$api_key,
                     heslo$api_secret, 
                     heslo$access_token, 
                     heslo$access_token_secret)
+
+# tweety stahnout buď jedny, nebo druhé (nemá smysl si je přemazávat :)
 
 # Oficiální komunikace
 # Babiš = AndrejBabis, Ovčáček - čtveráček = PREZIDENTmluvci, Slávek = SlavekSobotka
@@ -29,11 +31,9 @@ tweets <- tbl_df(map_df(tweets, as.data.frame))
 
 words <- tweets %>%
   select(id, text, created) %>%
-  filter(!str_detect(text, '^"')) %>%
-  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", "")) %>%
-  unnest_tokens(word, text, token = "words") %>%
-  filter(!word %in% balast$word,
-       str_detect(word, "[a-z]"))
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", "")) %>% # pryč s odkazy!
+  unnest_tokens(word, text, token = "words") %>% # převede do lowercase defaultně
+  filter(!word %in% balast$word, str_detect(word, "[a-z]")) # odstraní balast
 
 freq <- words %>%
   count(word) %>%
