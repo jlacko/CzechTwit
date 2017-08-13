@@ -11,7 +11,7 @@ balast <- data.frame(word = c("rt", "t.c", "http", "https", "a", "na", "to", "v"
 
 # Připojení ----
 
-heslo <- readRDS("heslo.rds") # tajné heslo, viz. gitignore :)
+heslo <- readRDS("heslo.rds")  # tajné heslo, viz. gitignore :)
 setup_twitter_oauth(heslo$api_key, 
                     heslo$api_secret, 
                     heslo$access_token, 
@@ -24,22 +24,22 @@ setup_twitter_oauth(heslo$api_key,
 tweets <- userTimeline("AndrejBabis", n = 3200)
 
 # Hlas lidu...
-tweets <- searchTwitter("Andrej+Babis", n=3200, lang = "cs")
+tweets <- searchTwitter("volby", n=3200, lang = "cs")
 
 # Vlastní těžení... ----
 tweets <- tbl_df(map_df(tweets, as.data.frame))
 
 words <- tweets %>%
   select(id, text, created) %>%
-  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", "")) %>% # pryč s odkazy!
-  unnest_tokens(word, text, token = "words") %>% # převede do lowercase defaultně
-  filter(!word %in% balast$word, str_detect(word, "[a-z]")) # odstraní balast
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", "")) %>%  # pryč s odkazy!
+  unnest_tokens(word, text, token = "words") %>%  # převede do lowercase defaultně
+  filter(!word %in% balast$word, str_detect(word, "[a-z]"))  # odstraní balast
 
 freq <- words %>%
   count(word) %>%
   arrange(desc(n))
 
-if (freq[1,2] > 1.5*freq[2,2]) freq[1,2] <- 1.5*freq[2,2] # snížit prominenci prvního slova
+if (freq[1,2] > 1.5*freq[2,2]) freq[1,2] <- 1.5*freq[2,2]  # snížit prominenci prvního slova
 
 wordcloud(freq$word, freq$n, max.words = 75, random.order = F, colors=rev(brewer.pal(6,"RdYlGn")))
 
