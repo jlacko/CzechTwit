@@ -24,7 +24,7 @@ setup_twitter_oauth(heslo$api_key,
 tweets <- userTimeline("AndrejBabis", n = 3200)
 
 # Hlas lidu...
-tweets <- searchTwitter("volby", n=3200, lang = "cs")
+tweets <- searchTwitter("Andrej Babis", n=3200, lang = "cs")
 
 # Vlastní těžení... ----
 tweets <- tbl_df(map_df(tweets, as.data.frame))
